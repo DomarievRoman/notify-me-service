@@ -1,5 +1,5 @@
 package com.domariev.emailsender.model.enums;
 
 public enum CategoryEnum {
-    SPORT, POLITICS, ART, FILMS, MUSIC, CELEBRITIES
+    SPORTS, POLITICS, ENTERTAINMENT, TECHNOLOGY, MUSIC, CELEBRITIES, BUSINESS, NATION, WORLD, SCIENCE, HEALTH
 }

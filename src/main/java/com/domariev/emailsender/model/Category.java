@@ -9,5 +9,7 @@ public class Category {
 
     private CategoryEnum name;
 
+    // private int publishingDaysPeriod;
+
     private MailingPriority mailingPriority;
 }

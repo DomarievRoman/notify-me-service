@@ -2,6 +2,7 @@ package com.domariev.emailsender.service.impl;
 
 import com.domariev.emailsender.model.NewsMailingRequest;
 import com.domariev.emailsender.repository.NewsMailingRequestRepository;
+import com.domariev.emailsender.service.EmailService;
 import com.domariev.emailsender.service.NewsMailingRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,13 @@ public class NewsMailingRequestServiceImpl implements NewsMailingRequestService 
 
     private final NewsMailingRequestRepository newsMailingRequestRepository;
 
+    private final EmailService emailService;
+
     @Override
     public NewsMailingRequest add(NewsMailingRequest newsMailingRequest) {
-        return newsMailingRequestRepository.insert(newsMailingRequest);
+        NewsMailingRequest mailingRequest = newsMailingRequestRepository.insert(newsMailingRequest);
+        emailService.sendEmail(mailingRequest);
+        return mailingRequest;
     }
 
     @Override

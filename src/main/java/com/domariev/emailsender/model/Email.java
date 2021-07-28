@@ -11,5 +11,5 @@ public class Email {
 
     private String subject;
 
-    private List<MailingBody> String;
+    private List<MailingBody> mailingBodyList;
 }
