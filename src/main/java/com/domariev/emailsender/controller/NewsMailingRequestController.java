@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,8 @@ public class NewsMailingRequestController {
     private final NewsMailingRequestService newsMailingRequestService;
 
     @PostMapping("/subscribe")
-    public ResponseEntity<NewsMailingRequest> mailingSubscribe(@RequestBody NewsMailingRequest newsMailingRequest) {
+    public ResponseEntity<NewsMailingRequest> mailingSubscribe
+            (@RequestBody NewsMailingRequest newsMailingRequest) throws MessagingException {
         return ResponseEntity.ok(newsMailingRequestService.add(newsMailingRequest));
     }
 

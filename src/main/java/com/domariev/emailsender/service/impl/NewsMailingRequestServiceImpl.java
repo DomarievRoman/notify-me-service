@@ -7,6 +7,7 @@ import com.domariev.emailsender.service.NewsMailingRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,7 +20,7 @@ public class NewsMailingRequestServiceImpl implements NewsMailingRequestService 
     private final EmailService emailService;
 
     @Override
-    public NewsMailingRequest add(NewsMailingRequest newsMailingRequest) {
+    public NewsMailingRequest add(NewsMailingRequest newsMailingRequest) throws MessagingException {
         NewsMailingRequest mailingRequest = newsMailingRequestRepository.insert(newsMailingRequest);
         emailService.sendEmail(mailingRequest);
         return mailingRequest;
