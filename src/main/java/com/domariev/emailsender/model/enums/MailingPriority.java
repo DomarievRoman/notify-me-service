@@ -5,9 +5,13 @@ public enum MailingPriority {
     YELLOW(10),
     GREEN(5);
 
-    public final int value;
+    private final int value;
 
     MailingPriority(int value) {
         this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
 }

@@ -27,12 +27,16 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public MimeMessage sendEmail(NewsMailingRequest mailingRequest) throws MessagingException {
         List<MailingBody> newsBodyList = mailingBodyService.formBody(mailingRequest);
-        String subjectCategories = getSelectedCategories(newsBodyList);
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message);
         String messageBody = formatEmailBody(newsBodyList);
         messageHelper.setTo(mailingRequest.getEmail());
-        messageHelper.setSubject("Recent news by categories: " + subjectCategories);
+        if (mailingRequest.getContentType().name().equals("TOPIC")) {
+            String subjectCategories = getSelectedCategories(newsBodyList);
+            messageHelper.setSubject("Recent news by categories: " + subjectCategories);
+        } else {
+            messageHelper.setSubject("Recent news from Notify Me Service");
+        }
         messageHelper.setText(messageBody, true);
         mailSender.send(message);
         return message;
@@ -42,7 +46,7 @@ public class EmailServiceImpl implements EmailService {
     private String getSelectedCategories(List<MailingBody> newsBodyList) {
         StringBuilder sb = new StringBuilder();
         List<String> categories = newsBodyList.stream()
-                .map(n -> n.getCategory().getName().toString())
+                .map(n -> n.getSearchParameter().getTopicName().toString())
                 .distinct()
                 .collect(Collectors.toList());
         for (String category : categories) {
@@ -53,13 +57,24 @@ public class EmailServiceImpl implements EmailService {
 
     private String formatEmailBody(List<MailingBody> newsBodyList) {
         StringBuilder sb = new StringBuilder();
-        Map<String, List<MailingBody>> collect = newsBodyList.stream()
-                .collect(Collectors.groupingBy(c -> c.getCategory().getName().toString()));
-        for (Map.Entry<String, List<MailingBody>> map : collect.entrySet()) {
+        Map<String, List<MailingBody>> newsByTopicMap;
+        boolean isNone = newsBodyList.stream().anyMatch(n -> n.getSearchParameter().getTopicName().name().equals("NONE"));
+        if (!isNone) {
+            newsByTopicMap = newsBodyList.stream()
+                    .collect(Collectors.groupingBy(c -> c.getSearchParameter().getTopicName().toString()));
+        } else {
+            newsByTopicMap = newsBodyList.stream()
+                    .collect(Collectors.groupingBy(c -> c.getSearchParameter().getSearchQuery()));
+        }
+        for (Map.Entry<String, List<MailingBody>> map : newsByTopicMap.entrySet()) {
             int count = 0;
-            String category = map.getKey();
-            String capitalizedCategory = category.substring(0, 1).toUpperCase() + category.substring(1).toLowerCase();
-            sb.append("<p><h3>").append(capitalizedCategory).append(" Topic").append("</h3></p>");
+            String title = map.getKey();
+            if (!isNone) {
+                String capitalizedCategory = title.substring(0, 1).toUpperCase() + title.substring(1).toLowerCase();
+                sb.append("<p><h3>").append(capitalizedCategory).append(" Topic").append("</h3></p>");
+            } else {
+                sb.append("<p><h3>").append("News by keywords: ").append(title).append("</h3></p>");
+            }
             for (MailingBody body : map.getValue()) {
                 sb.append("<h4>").append(++count).append(". ")
                         .append("<a href=\"").append(body.getNewsLink())

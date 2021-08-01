@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class MailingBody {
 
-    private Category category;
+    private SearchParameter searchParameter;
 
     private String title;
 

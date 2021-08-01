@@ -16,11 +16,9 @@ public class NewsMailingRequest {
 
     private String email;
 
-    private List<Category> categoryList;
+    private List<SearchParameter> searchParameterList;
 
     private ContentType contentType;
-
-    private String language;
 
     private int timeToSendOut;
 }
