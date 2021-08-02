@@ -14,8 +14,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Service
 public class MailingBodyServiceImpl implements MailingBodyService {
@@ -23,7 +26,6 @@ public class MailingBodyServiceImpl implements MailingBodyService {
     private static final String TOPIC_URL = "https://news.google.com/rss/headlines/section/topic/";
     private static final String KEYWORDS_URL = "https://news.google.com/rss/search?q=";
     private static final String LOCATION_URL = "https://news.google.com/rss/headlines/section/geo/";
-
 
     @Override
     public List<MailingBody> formBody(NewsMailingRequest newsMailingRequest) {
@@ -58,7 +60,10 @@ public class MailingBodyServiceImpl implements MailingBodyService {
                 url = new URL(LOCATION_URL + searchParameter.getSearchQuery() +
                         "?hl=" + language + "-" + location + "&gl=" + location + "&ceid=" + location + ":" + language);
             } else {
-                url = new URL(KEYWORDS_URL + searchParameter.getSearchQuery() +
+                String keywords = searchParameter.getSearchQuery();
+                keywords = URLEncoder.encode(keywords, UTF_8.toString());
+                String pubDays = "+when:" + searchParameter.getPublishingDaysPeriod() + "d";
+                url = new URL(KEYWORDS_URL + keywords + pubDays +
                         "&hl=" + language + "-" + location + "&gl=" + location + "&ceid=" + location + ":" + language);
             }
             XmlReader reader = new XmlReader(url);

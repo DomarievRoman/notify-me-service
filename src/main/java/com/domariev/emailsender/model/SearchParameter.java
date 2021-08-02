@@ -12,7 +12,7 @@ public class SearchParameter {
     
     private String searchQuery;
 
-    // private int publishingDaysPeriod;
+    private int publishingDaysPeriod;
 
     private NewsLocation newsLocation;
 
