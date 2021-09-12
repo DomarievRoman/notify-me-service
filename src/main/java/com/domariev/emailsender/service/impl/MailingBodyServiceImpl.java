@@ -10,6 +10,8 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -26,6 +29,8 @@ public class MailingBodyServiceImpl implements MailingBodyService {
     private static final String TOPIC_URL = "https://news.google.com/rss/headlines/section/topic/";
     private static final String KEYWORDS_URL = "https://news.google.com/rss/search?q=";
     private static final String LOCATION_URL = "https://news.google.com/rss/headlines/section/geo/";
+    private static final String NO_PICTURE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSPBd" +
+            "CYi2v2gXSJfvkxRbNbJPTULS9PG8dJw&usqp=CAU";
 
     @Override
     public List<MailingBody> formBody(NewsMailingRequest newsMailingRequest) {
@@ -77,6 +82,13 @@ public class MailingBodyServiceImpl implements MailingBodyService {
                 mailingBody.setSearchParameter(searchParameter);
                 mailingBody.setTitle(entry.getTitle());
                 mailingBody.setNewsLink(entry.getLink());
+                Document doc = Jsoup.connect(entry.getLink()).ignoreHttpErrors(true).timeout(5000).get();
+                String image = Objects.requireNonNull(doc.select("meta[property=og:image]")).attr("content");
+                if (!image.equals("")) {
+                    mailingBody.setImage(image);
+                } else {
+                    mailingBody.setImage(NO_PICTURE);
+                }
                 mailingBodyList.add(mailingBody);
             }
         } catch (FeedException | IOException e) {

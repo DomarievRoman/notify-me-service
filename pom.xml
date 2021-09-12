@@ -16,6 +16,8 @@
 	<properties>
 		<java.version>11</java.version>
 		<rome.version>1.0</rome.version>
+		<jsoup.version>1.14.2</jsoup.version>
+		<velocity.version>1.7</velocity.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -55,6 +57,17 @@
 			<artifactId>rome</artifactId>
 			<version>${rome.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>${velocity.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

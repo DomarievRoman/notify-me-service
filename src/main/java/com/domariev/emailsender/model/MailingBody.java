@@ -11,4 +11,6 @@ public class MailingBody {
 
     private String newsLink;
 
+    private String image;
+
 }
